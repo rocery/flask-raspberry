@@ -2,8 +2,8 @@ from paddleocr import PaddleOCR, draw_ocr
 from PIL import Image
 
 ocr = PaddleOCR(use_angle_cls=True, lang='en')  # need to run only once to download and load model into memory
-img_path = 'e.png'
-# img_path = 'a.jpg'
+#img_path = 'e.png'
+img_path = 'ocr.jpeg'
 result = ocr.ocr(img_path, cls=False)
 # print(result)
 for idx in range(len(result)):
