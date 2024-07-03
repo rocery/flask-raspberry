@@ -140,10 +140,9 @@ def group_pred():
     for name, _ in predictions:
         if name is not None:
             names.append(name)
-
     return jsonify({'names': names})
 
 if __name__ == '__main__':
-    # if debug True, camera only run once then blank (white)
+    # if debug=True, the camera may be not accessible
     app.run(host='0.0.0.0', port=5000, threaded=True)
  
