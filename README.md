@@ -4,6 +4,11 @@
 sudo apt install cmake
 
 2. dlib
+pip3 install dlib
+then try this python code:
+    import dlib
+    print(dlib.__version__)
+if error:
 wget https://github.com/prepkg/dlib-raspberrypi/releases/latest/download/dlib_64.deb
 sudo apt install -y ./dlib_64.deb
 
@@ -18,12 +23,18 @@ sudo apt-get install python-OpenCV
 
 4. NumPy 
 pip install numpy==1.26.4
+can't use numpy 2 when use face_recognitios
 
 5. face_recognition_models
 wget https://www.piwheels.org/simple/face-recognition-models/face_recognition_models-0.3.0-py2.py3-none-any.whl
 pip3 install face_recognition_models-0.3.0-py2.py3-none-any.whl
 
 6. face_recognition
+pip3 install face-recognition
+then try this python code:
+    import face_recognition_models
+    import face_recognition
+if error:
 git clone https://github.com/ageitgey/face_recognition.git
 cd face_recognition
 edit setup.py -> comment dlib, face_recognition_models, and numpy
