@@ -90,3 +90,47 @@ def predict(X_frame, knn_clf = None, model_path = None, distance_threshold = 0.5
     face_encodings = face_recognition.face_encodings(X_frame, known_face_locations = X_face_locations)
     closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors = 3)
     are_matches = [closest_distances[0][i][0] <= distance_threshold for i in range(len(face_encodings))]
+    
+    for pred, loc, rec, label, value in zip(knn_clf.predict(face_encodings), X_face_locations, are_matches, X_label, X_value):
+        if rec and label == 1:
+            predictions.append((pred, loc, label, value))
+        elif rec == False and label == 1 or label == 2:
+            predictions.append(("Palsu", loc, label, value))
+        elif rec and label == 1 or label == 2:
+            pred_ = "{}, Pelanggaran".format(pred)
+            predictions.append((pred_, loc, label, value))
+        else:
+            predictions.append(("Tidak Diketahui", loc, label, value))
+    
+    return predictions
+
+def show_labels_on_image(frame, predictions):
+    pil_image = Image.fromarray(frame)
+    draw = ImageDraw.Draw(pil_image)
+    font = ImageFont.truetype("static/font/Ubuntu.ttf", 16)
+    
+    time_str = time.strftime("%A, %d-%m-%Y %H:%M:%S", time.localtime())
+    draw.text((10, 5), time_str, fill = (0, 0, 0), font = font)
+    
+    for name, (top, right, bottom, left), label, value in predictions:
+        top *= 2
+        right *= 2
+        bottom *= 2
+        left *= 2
+        
+        if label == 1:
+            fig_outline = (200, 0, 0)
+        else:
+            fig_outline = (0, 0, 200)
+        
+        fig_label = "{}, Value: {:.2f}".format(name, value)
+        draw.rectangle(((left, top), (right, bottom)), outline = fig_outline, width = 3)
+        
+        # Draw a solid rectangle below the rectangle, fill it with name
+        # draw.rectangle(((left, top - 20), (right, top)), fill = fig_outline, outline = fig_outline)
+        draw.text((left + 5, top - 15), fig_label, fill = fig_outline, font = font)
+        
+    del draw
+    
+    opencvimage = np.array(pil_image)
+    return opencvimage
