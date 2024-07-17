@@ -55,3 +55,38 @@ def liveness_check(frame, model_dir, device_id):
 def predict(X_frame, knn_clf = None, model_path = None, distance_threshold = 0.5):
     if knn_clf is None and model_path is None:
         raise Exception("File Encoding Tidak Ditemukan")
+    
+    if knn_clf is None:
+        with open(model_path, 'rb') as f:
+            knn_clf = pickle.load(f)
+            
+    predictions = []
+    
+    desc = "liveness_check"
+    parser = argparse.ArgumentParser(description = desc)
+    parser.add_argument(
+        "--model_dir",
+        type = str,
+        default = "./resources/anti_spoof_models",
+        help = "model_lib directory used to test"
+    )
+    args = parser.parse_args()
+    
+    liveness = liveness_check(X_frame, args.model_dir, 0)
+    if len(liveness) == 0:
+        return []
+    
+    if len(liveness) > 1:
+        return [("Terdeteksi Lebih dari Satu Wajah", liveness[0][2], 10, 10)]
+    
+    X_label = []
+    X_value = []
+    X_face_locations = []
+    for data in liveness:
+        X_label.append(data[0])
+        X_value.append(data[1])
+        X_face_locations.append(data[2])
+        
+    face_encodings = face_recognition.face_encodings(X_frame, known_face_locations = X_face_locations)
+    closest_distances = knn_clf.kneighbors(face_encodings, n_neighbors = 3)
+    are_matches = [closest_distances[0][i][0] <= distance_threshold for i in range(len(face_encodings))]
