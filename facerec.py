@@ -4,6 +4,7 @@ import numpy as np
 import argparse
 import warnings
 import time
+import face_recognition_models
 import face_recognition
 import pickle
 from PIL import Image, ImageDraw, ImageFont
