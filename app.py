@@ -62,7 +62,7 @@ def submit_facerec():
         name_input = request.form.get('name_input')
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah']:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
             flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Nama: {name_input}")
             return redirect(url_for('facerec'))           
         else:
