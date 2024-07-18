@@ -99,9 +99,9 @@ def predict(X_frame, knn_clf = None, model_path = None, distance_threshold = 0.5
             predictions.append(("Palsu", loc, label, value))
         elif rec and label == 1 or label == 2:
             pred_ = "{}, Pelanggaran".format(pred)
-            predictions.append((pred_, loc, label, value))
+            predictions.append(("Palsu", loc, label, value))
         else:
-            predictions.append(("Tidak Diketahui", loc, label, value))
+            predictions.append(("Tidak Dikenali", loc, label, value))
     
     return predictions
 

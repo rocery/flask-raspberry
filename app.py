@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, flash
-from predict import predict, show_labels_on_image
+from facerec import predict, show_labels_on_image
 from read_data import *
 import cv2
 import csv
@@ -62,7 +62,7 @@ def submit_facerec():
         name_input = request.form.get('name_input')
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi']:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah']:
             flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Nama: {name_input}")
             return redirect(url_for('facerec'))           
         else:
@@ -94,7 +94,9 @@ def group_submit_facerec():
         flash("Error, data terdeteksi tidak ada, silahkan ulangi proses Face Recognition")
 
 # in Raspberry Pi, use index camera won't work
-cap = cv2.VideoCapture('/dev/video0')
+camera = '/dev/video0'
+# dev/video0
+cap = cv2.VideoCapture(camera)
 predictions = []
 def generate_frames():
     process_this_frame = 39
