@@ -15,12 +15,12 @@ CSV_FILE_PATH_GROUP = 'static/data/group_data.csv'
 
 # Ensure the CSV file exists and has the correct headers
 if not os.path.exists(CSV_FILE_PATH):
-    with open(CSV_FILE_PATH, mode='w', newline='') as file:
+    with open(CSV_FILE_PATH, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
         writer.writerow(['Name', 'Category', 'Time'])
 
 if not os.path.exists(CSV_FILE_PATH_GROUP):
-    with open(CSV_FILE_PATH_GROUP, mode='w', newline='') as file:
+    with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
         writer.writerow(['Names', 'Time'])
         
@@ -43,7 +43,7 @@ def face_recognition():
 @app.route('/face_recognition/facerec')
 def facerec():
     data_csv = read_csv(CSV_FILE_PATH)
-    return render_template('face_recognition/facerec.html', data_csv=data_csv)
+    return render_template('face_recognition/facerec.html', data_csv = data_csv)
 
 @app.route('/face_recognition/facerec_group')
 def facerec_group():
@@ -52,7 +52,7 @@ def facerec_group():
         last_row = next(reader)
         last_index = last_row[0]
     data_csv = read_csv_group(CSV_FILE_PATH_GROUP)
-    return render_template('face_recognition/facerec_group.html', data_csv=data_csv, last_index=last_index)
+    return render_template('face_recognition/facerec_group.html', data_csv = data_csv, last_index = last_index)
 
 @app.route('/submit_facerec', methods=['POST'])
 def submit_facerec():
