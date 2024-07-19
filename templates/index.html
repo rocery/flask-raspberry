@@ -9,5 +9,19 @@
     <button type="button" class="btn btn-primary"><a href="/face_recognition/facerec"><h1>/face_recognition/facerec</h1></a></button>
     <button type="button" class="btn btn-primary"><a href="/face_recognition/facerec_group"><h1>/face_recognition/facerec_group</h1></a></button>
     <button type="button" class="btn btn-primary"><a href="/ocr/plat_number"><h1>/ocr/plat_number</h1></a></button>
+  
+    <h3>Button Status</h3>
+    <p>Button Login: <span id="button_login">unknown</span></p>
+    <p>Button Logout: <span id="button_logout">unknown</span></p>
   </body>
 </html>
+
+<script>
+  async function fetchButtonStatus() {
+      const response = await fetch('/button_status');
+      const data = await response.json();
+      document.getElementById('button_login').innerText = data.button_login;
+      document.getElementById('button_logout').innerText = data.button_logout;
+  }
+  setInterval(fetchButtonStatus, 500); // Fetch status every second
+</script>

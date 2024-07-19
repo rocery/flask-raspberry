@@ -1,0 +1,9 @@
+import RPi.GPIO as GPIO
+
+# GPIO setup
+GPIO.setmode(GPIO.BCM)
+BUTTON_LOGIN = 5
+BUTTON_LOGOUT = 6
+
+GPIO.setup(BUTTON_LOGIN, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(BUTTON_LOGOUT, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)

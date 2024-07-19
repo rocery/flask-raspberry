@@ -1,10 +1,12 @@
 from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, flash
 from facerec import predict, show_labels_on_image
 from read_data import *
+from read_button import *
 import cv2
 import csv
 import os
 import time
+import random
 
 app = Flask(__name__)
 app.secret_key = 'itbekasioke'  # Necessary for using flash messages
@@ -24,10 +26,12 @@ if not os.path.exists(CSV_FILE_PATH_GROUP):
         writer = csv.writer(file)
         writer.writerow(['Names', 'Time'])
         
+# Root index       
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# OCR Route
 @app.route('/ocr')
 def ocr():
     return render_template('ocr/index.html')
@@ -36,15 +40,18 @@ def ocr():
 def plat_number():
     return render_template('ocr/index.html')
 
+# Route Face_Recognition Index
 @app.route('/face_recognition')
 def face_recognition():
     return render_template('face_recognition/index.html')
 
+#Route Single Facerec
 @app.route('/face_recognition/facerec')
 def facerec():
     data_csv = read_csv(CSV_FILE_PATH)
     return render_template('face_recognition/facerec.html', data_csv = data_csv)
 
+#Route Group Facerec
 @app.route('/face_recognition/facerec_group')
 def facerec_group():
     with open(CSV_FILE_PATH_GROUP, 'r') as file:
@@ -63,7 +70,7 @@ def submit_facerec():
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
         if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
-            flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Nama: {name_input}")
+            flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Data: {name_input}")
             return redirect(url_for('facerec'))           
         else:
             # Save data to CSV
@@ -144,7 +151,18 @@ def group_pred():
             names.append(name)
     return jsonify({'names': names})
 
+@app.route('/button_status', methods=['GET'])
+def button_status():
+    button_login_status = GPIO.input(BUTTON_LOGIN)
+    button_logout_status = GPIO.input(BUTTON_LOGOUT)
+    return jsonify({
+        'button_login': 'HIGH' if button_login_status == GPIO.HIGH else 'LOW',
+        'button_logout': 'HIGH' if button_logout_status == GPIO.HIGH else 'LOW'
+    })
+
 if __name__ == '__main__':
-    # if debug=True, the camera may be not accessible
-    app.run(host='0.0.0.0', port=5000, threaded=True)
- 
+    try:
+        # if debug=True, the camera may be not accessible
+        app.run(host='0.0.0.0', port=5000, threaded=True)
+    finally:
+        GPIO.cleanup
