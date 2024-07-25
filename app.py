@@ -162,17 +162,21 @@ def uploads():
         
         # Validasi input
         if not name or not id or not images:
-            flash('Semua field harus diisi', 'danger')
+            flash('Semua form harus diisi', 'danger')
+            return redirect(request.url)
+        
+        if not "".join(name.split()).isalpha():
+            flash('Nama harus berupa huruf alfabet. Nama yang diinput: {}'.format(name), 'danger')
             return redirect(request.url)
 
         if not id.isdigit():
-            flash('ID harus berupa angka', 'danger')
+            flash('ID harus berupa angka. ID yang diinput: {}'.format(id), 'danger')
             return redirect(request.url)
 
         # Validasi format gambar
         for image in images:
             if not allowed_file(image.filename):
-                flash('Format gambar harus JPG, JPEG, atau PNG', 'danger')
+                flash('Format gambar yang diinput harus JPG, JPEG, atau PNG', 'danger')
                 return redirect(request.url)
 
         formatted_name = format_name(name)
