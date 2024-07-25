@@ -13,11 +13,11 @@ from datetime import datetime
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'JPG'}
 
-train_folder = "uploads/train"
-fail_folder = "uploads/fail"
-model_save_path = "static/clf/trained_knn_model.clf"
-csv_success = 'uploads/success_trained.csv'
-csv_fail = 'uploads/fail_trained.csv'
+train_folder = "../uploads/train"
+fail_folder = "../uploads/fail"
+model_save_path = "../static/clf/trained_knn_model.clf"
+csv_success = '../uploads/success_trained.csv'
+csv_fail = '../uploads/fail_trained.csv'
 
 def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree', verbose=True):
     """
@@ -63,7 +63,6 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
             image = face_recognition.load_image_file(img_path)
             face_bounding_boxes = face_recognition.face_locations(image)
             img_counter += 1
-            
             start_time_encoding = time.time()
             
             if len(face_bounding_boxes) != 1:
@@ -72,11 +71,12 @@ def train(train_dir, model_save_path=None, n_neighbors=None, knn_algo='ball_tree
                     print("Image {} not suitable for training: {}".format(img_path, "Didn't find a face" if len(face_bounding_boxes) < 1 else "Found more than one face"))
                     failed_images_counter += 1
                     
+                    
                     with open (csv_fail, mode='a', newline='') as file:
                         writer = csv.writer(file)
                         now = datetime.now()
                         writer.writerow([img_counter, class_dir, img_path, "Wajah tidak terdeteksi" if len(face_bounding_boxes) < 1 else "Wajah terdeteksi lebih dari 1", now.strftime("%Y-%m-%d %H:%M:%S")])
-                shutil.move(img_path, os.path.join("uploads/fail", os.path.basename(img_path)))
+                shutil.move(img_path, os.path.join(fail_folder, os.path.basename(img_path)))         
                 
             else:
                 # Add face encoding for current image to the training set
@@ -129,20 +129,18 @@ if __name__ == "__main__":
         os.makedirs(fail_folder)
         
     # Membuat CSV jika belum ada
-    if os.path.exists(csv_success):
-        os.remove(csv_success)
-        with open(csv_success, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(['No.', 'Folder', 'File', 'Time'])
+    os.remove(csv_success)
+    with open(csv_success, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['No.', 'Folder', 'File', 'Time'])
     # Membuat CSV jika belum ada
-    if os.path.exists(csv_fail):
-        os.remove(csv_fail)
-        with open(csv_fail, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(['No.', 'Folder', 'File', 'Information', 'Time'])
+    os.remove(csv_fail)
+    with open(csv_fail, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(['No.', 'Folder', 'File', 'Information', 'Time'])
     
     print("Training KNN classifier...")
-    classifier = train(train_dir = train_folder,
+    train(train_dir = train_folder,
                     model_save_path = model_save_path,
                     n_neighbors = 2)
     print("Training complete!")

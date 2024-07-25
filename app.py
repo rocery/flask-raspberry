@@ -11,6 +11,7 @@ import random
 
 app = Flask(__name__)
 app.secret_key = 'itbekasioke'  # Necessary for using flash messages
+app.config['UPLOAD_FOLDER'] = 'uploads/train'
 
 # Path to the CSV file
 CSV_FILE_PATH = 'static/data/data.csv'
