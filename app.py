@@ -2,6 +2,7 @@ from flask import Flask, render_template, Response, jsonify, request, redirect, 
 from facerec import predict, show_labels_on_image
 from read_data import *
 from read_button import *
+from uploads import *
 import cv2
 import csv
 import os
@@ -150,6 +151,39 @@ def group_pred():
         if name is not None:
             names.append(name)
     return jsonify({'names': names})
+
+@app.route('/uploads', methods=['GET', 'POST'])
+def uploads():
+    if request.method == 'POST':
+        name = request.form['name']
+        id = request.form['id']
+        images = request.files.getlist('images')
+        
+        # Validasi input
+        if not name or not id or not images:
+            flash('Semua field harus diisi', 'danger')
+            return redirect(request.url)
+
+        if not id.isdigit():
+            flash('ID harus berupa angka', 'danger')
+            return redirect(request.url)
+
+        # Validasi format gambar
+        for image in images:
+            if not allowed_file(image.filename):
+                flash('Format gambar harus JPG, JPEG, atau PNG', 'danger')
+                return redirect(request.url)
+
+        formatted_name = format_name(name)
+        folder_name = f"{id}_{formatted_name}"
+        folder_path = os.path.join(app.config['UPLOAD_FOLDER'], folder_name)
+        
+        save_image(images, folder_path)
+        flash('Data {} berhasil disimpan'.format(folder_name), 'success')
+        return redirect(url_for('uploads'))
+    
+    folders_info = get_folders_info(app.config['UPLOAD_FOLDER'])
+    return render_template('uploads.html', folders_info=folders_info) 
 
 @app.route('/button_status', methods=['GET'])
 def button_status():
