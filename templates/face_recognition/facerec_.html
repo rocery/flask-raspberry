@@ -53,7 +53,7 @@
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <div class="modal fade" id="notificationModal">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog" style="width:303px;" role="document">
                     <div class="modal-content">
                         <div class="modal-body">
                             {% for message in messages %}
@@ -114,6 +114,8 @@
         <div class="col-5 center_all" style="font-size: 10px;">{{ row[2] }}</div>
         {% endfor %}
     </div>
+
+    <div class="center_all" style="font-size: 10px;">{{ ip_address }}</div>
 
     <!-- <div class="">
         <div>

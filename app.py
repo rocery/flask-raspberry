@@ -7,7 +7,7 @@ import cv2
 import csv
 import os
 import time
-import random
+import socket
 
 app = Flask(__name__)
 app.secret_key = 'itbekasioke'  # Necessary for using flash messages
@@ -56,7 +56,8 @@ def facerec():
 @app.route('/face_recognition/facerec_')
 def facerec_():
     data_csv = read_csv(CSV_FILE_PATH)
-    return render_template('face_recognition/facerec_.html', data_csv=data_csv)
+    ip_address = get_external_ip()
+    return render_template('face_recognition/facerec_.html', data_csv=data_csv, ip_address=ip_address)
 
 #Route Group Facerec
 @app.route('/face_recognition/facerec_group')
@@ -77,7 +78,7 @@ def submit_facerec():
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
         if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
-            flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Data: {name_input}")
+            flash(f"Data terdeteksi salah")
             return redirect(url_for('facerec'))           
         else:
             # Save data to CSV
@@ -99,7 +100,7 @@ def submit_facerec_():
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
         if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
-            flash(f"Data terdeteksi salah, silahkan ulangi proses Face Recognition. Nama: {name_input}")
+            flash(f"Data terdeteksi salah")
             return redirect(url_for('facerec_'))
             
         else:
@@ -108,6 +109,8 @@ def submit_facerec_():
                 writer = csv.writer(file)
                 writer.writerow([name_input, time_category, time_str])
             flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}")
+            
+            # Save data to MySQL
             return redirect(url_for('facerec_'))
         
     else:
