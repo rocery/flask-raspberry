@@ -3,11 +3,11 @@ from facerec import predict, show_labels_on_image
 from read_data import *
 from read_button import *
 from uploads import *
+from mysql_process import *
 import cv2
 import csv
 import os
 import time
-import socket
 
 app = Flask(__name__)
 app.secret_key = 'itbekasioke'  # Necessary for using flash messages
@@ -55,9 +55,13 @@ def facerec():
 
 @app.route('/face_recognition/facerec_')
 def facerec_():
-    data_csv = read_csv(CSV_FILE_PATH)
+    # data_csv = read_csv(CSV_FILE_PATH)
     ip_address = get_external_ip()
-    return render_template('face_recognition/facerec_.html', data_csv=data_csv, ip_address=ip_address)
+    
+    # read_data_from_db
+    data = read_presensi()
+    
+    return render_template('face_recognition/facerec_.html', data_csv=data, ip_address=ip_address)
 
 #Route Group Facerec
 @app.route('/face_recognition/facerec_group')
@@ -91,15 +95,16 @@ def submit_facerec():
     else:
         flash("Error, data terdeteksi tidak ada, silahkan ulangi proses Face Recognition")
         return redirect(url_for('facerec'))
+    
 @app.route('/submit_facerec_', methods=['POST'])
 def submit_facerec_():
     if request.method == 'POST':
         # Get data from the form
         time_category = request.form.get('time_category')
         name_input = request.form.get('name_input')
-        time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
+        time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in name_input:
             flash(f"Data terdeteksi salah")
             return redirect(url_for('facerec_'))
             
@@ -108,9 +113,15 @@ def submit_facerec_():
             with open(CSV_FILE_PATH, mode='a', newline='') as file:
                 writer = csv.writer(file)
                 writer.writerow([name_input, time_category, time_str])
-            flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}")
             
             # Save data to MySQL
+            nip = "-"
+            data = insert_presensi(nip, name_input, time_category, time_str)
+            if data:
+                flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}")
+            else:
+                flash("Data Gagal Disimpan ke Database. Mohon Hubungi IT")
+                
             return redirect(url_for('facerec_'))
         
     else:
@@ -167,13 +178,17 @@ def video_feed():
 
 @app.route('/pred')
 def pred():
+    # Initialize name_ to a default value
+    name_ = "Face Recognition"
     # Initialize name_ outside the loop
-    name_ = None
     for name, _, _, _ in predictions:
-        if name is None:
-            name_ = "Tidak Terdeteksi"
-        else:
+        if name:
             name_ = name
+        # If you want to break after the first non-empty name, you can use:
+        # if name:
+        #     name_ = name
+        #     break
+
     return jsonify({'name_': name_})
 
 @app.route('/group_pred')

@@ -14,7 +14,7 @@
             height: 480px;
             overflow: hidden;
             background-color: #f0f0f0;
-            font-family: Arial, sans-serif;
+            font-family: sans-serif;
         }
         .box_padding {
             padding: 3px;
@@ -26,13 +26,13 @@
         }
         .video_stream {
             max-width: 100%;
-            max-height: 100%;
         }
         .card {
             margin-bottom: 10px;
         }
         .button_width {
-            width: 100%;
+            width: 320%;
+            height: 240px;
         }
         .button-container {
             display: flex;
@@ -45,6 +45,10 @@
         }
         .button-container button {
             width: 100%;
+        }
+        .name_p {
+            font-weight: bold;
+            font-size: 22px;
         }
     </style>
 </head>
@@ -72,9 +76,9 @@
     {% endwith %}
 
     <div class="center_all">
-        <div class="flex">Nama : </div>
-        <div id="name_">-</div>
+        <div id="name_" class="name_p flex">Nama</div>
     </div>
+
     <div>
         <img class="rounded video_stream" src="{{ url_for('video_feed')}}" alt="Camera Error">
     </div>

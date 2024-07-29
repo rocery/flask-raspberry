@@ -55,7 +55,7 @@ def show_labels_on_image(frame, predictions):
     # Draw a box around the face using the Pillow module
     pil_image = Image.fromarray(frame)
     draw = ImageDraw.Draw(pil_image)
-    font = ImageFont.truetype("static/font/Ubuntu.ttf", 16)
+    font = ImageFont.truetype("static/font/Ubuntu.ttf", 22)
 
     time_str = time.strftime("%A, %d-%m-%Y %H:%M:%S", time.localtime())
     draw.text((10, 5), time_str, fill=(0, 0, 0), font=font)
@@ -65,7 +65,7 @@ def show_labels_on_image(frame, predictions):
         right *= 2
         bottom *= 2
         left *= 2
-        draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255), width = 3)
+        draw.rectangle(((left, top), (right, bottom)), outline=(0, 0, 255), width = 6)
         
         # Draw a solid rectangle below the rectangle, fill it with name
         draw.rectangle(((left, top - 20), (right, top)), fill=(0, 0, 255), outline=(0, 0, 255))
