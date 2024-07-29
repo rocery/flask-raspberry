@@ -37,7 +37,12 @@ def read_presensi():
         )
         if connection.is_connected():
             cursor = connection.cursor()
-            query = "SELECT name, category, date FROM presensi LIMIT 3"
+            query = (
+                "SELECT name, category, date "
+                "FROM `presensi` "
+                "ORDER BY `date` "
+                "DESC LIMIT 3"
+            )
             cursor.execute(query)
             records = cursor.fetchall()
             
