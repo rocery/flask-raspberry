@@ -5,7 +5,7 @@ from mysql.connector import Error
 def insert_presensi(nip, name, category, date):
     try:
         connection = mysql.connector.connect(
-            host='192.168.10.223',
+            host='192.168.15.223',
             database='face_recognition',
             user='admin',
             password='itbekasioke'
@@ -30,7 +30,7 @@ def insert_presensi(nip, name, category, date):
 def read_presensi():
     try:
         connection = mysql.connector.connect(
-            host='192.168.10.223',
+            host='192.168.15.223',
             database='face_recognition',
             user='admin',
             password='itbekasioke'
