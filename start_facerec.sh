@@ -21,7 +21,7 @@ python3 app.py &
 wait_for_x
 
 # Wait for a few more seconds to ensure the Flask app is running
-sleep 20
+sleep 10
 
 # Clear Chromium browser cache
 #rm -rf ~/.config/chromium/Default
