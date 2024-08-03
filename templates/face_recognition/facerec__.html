@@ -77,6 +77,7 @@
 
     <div class="center_all">
         <div id="name_" class="name_p flex">Nama</div>
+        <div id="nip_" class="d-none"></div>
     </div>
 
     <div>
@@ -108,18 +109,19 @@
 
     <form id="form_submit" action="{{ url_for('submit_facerec__') }}" method="post">
         <input type="hidden" id="name_input" name="name_input" value=""> 
+        <input type="hidden" id="nip_input" name="nip_input" value=""> 
     </form>
 
     <div class="row">
-        <div class="col-6 center_all" style="font-size: 10px;">Nama</div>
+        <div class="col-8 center_all" style="font-size: 10px;">Nama</div>
         <!-- <div class="col-2 center_all" style="font-size: 10px;">Kategori</div> -->
-        <div class="col-6 center_all" style="font-size: 10px;">Waktu</div>
+        <div class="col-4 center_all" style="font-size: 10px;">Waktu</div>
     </div>
     <div class="row">
         {% for row in data_csv %}
-        <div class="col-6 center_all" style="font-size: 10px;">{{ row[0] }}</div>
+        <div class="col-8 center_all" style="font-size: 10px;">{{ row[0] }}</div>
         <!-- <div class="col-2 center_all" style="font-size: 10px;">{{ row[1] }}</div> -->
-        <div class="col-6 center_all" style="font-size: 10px;">{{ row[2] }}</div>
+        <div class="col-4 center_all" style="font-size: 10px;">{{ row[2] }}</div>
         {% endfor %}
     </div>
 
@@ -184,11 +186,13 @@
     function updateHiddenInput(formId) {
         // Get the value of the h5 element with id "name_"
         var name_ = document.getElementById('name_').textContent;
+        var nip_ = document.getElementById('nip_').textContent;
         console.log(name_)
         // Set this value to the hidden input field with id "name_input"
         //document.getElementById('name_input').value = originalText;
         //document.querySelector(`#${formId} input[name="name_input"]`).value = name_;
         document.querySelector(`#${formId} input[name="name_input"]`).value = name_;
+        document.querySelector(`#${formId} input[name="nip_input"]`).value = nip_;
     }
 
     // Function to hide the modal automatically after a few seconds
@@ -229,9 +233,11 @@
     function submitForm() {
         // Get the name element
         const nameElement = document.getElementById('name_');
+        const nipElement = document.getElementById('nip_');
         
         // Get the current name
         const currentName = nameElement.textContent;
+        const currentNip = nipElement.textContent;
         
         // Define the list of invalid names
         const invalidNames = ["Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition"];
@@ -240,6 +246,7 @@
         // and the current name is different from the previous name
         if (currentName && !invalidNames.includes(currentName) && currentName !== lastName) {
             document.getElementById('name_input').value = currentName;
+            document.getElementById('nip_input').value = currentNip;
             
             // Submit the form
             document.getElementById('form_submit').submit();
@@ -249,5 +256,5 @@
         }
     }
     // Set interval to check the condition and submit the form every 1 second
-    setInterval(submitForm, 3000);
+    setInterval(submitForm, 2000);
 </script>

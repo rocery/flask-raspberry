@@ -16,6 +16,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads/train'
 # Path to the CSV file
 CSV_FILE_PATH = 'static/data/data.csv'
 CSV_FILE_PATH_GROUP = 'static/data/group_data.csv'
+CSV_FILE_PATH_AUTOMATE = 'static/data/__.csv'
 
 # Ensure the CSV file exists and has the correct headers
 if not os.path.exists(CSV_FILE_PATH):
@@ -27,6 +28,11 @@ if not os.path.exists(CSV_FILE_PATH_GROUP):
     with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
         writer.writerow(['Names', 'Time'])
+
+if not os.path.exists(CSV_FILE_PATH_AUTOMATE):
+    with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
+        writer = csv.writer(file)
+        writer.writerow(['NIP', 'Names', 'Time'])
         
 # Root index       
 @app.route('/')
@@ -153,6 +159,7 @@ def submit_facerec__():
         # Get data from the form
         # time_category = request.form.get('time_category')
         name_input = request.form.get('name_input')
+        nip = request.form.get('nip_input')
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         
         if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in name_input:
@@ -166,7 +173,6 @@ def submit_facerec__():
                 writer.writerow([name_input, time_str])
             
             # Save data to MySQL
-            nip = "-"
             time_category = "-"
             data = insert_presensi(nip, name_input, time_category, time_str)
             if data:
@@ -235,13 +241,13 @@ def pred():
     # Initialize name_ outside the loop
     for name, _, _, _ in predictions:
         if name:
-            name_ = name
+            name_, nip_ = data.rsplit('_', 1)
         # If you want to break after the first non-empty name, you can use:
         # if name:
         #     name_ = name
         #     break
 
-    return jsonify({'name_': name_})
+    return jsonify({'name_': name_, 'nip_: nip_'})
 
 @app.route('/group_pred')
 def group_pred():
