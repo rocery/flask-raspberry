@@ -168,9 +168,9 @@ def submit_facerec__():
             
         else:
             # Save data to CSV
-            with open(CSV_FILE_PATH, mode='a', newline='') as file:
+            with open(CSV_FILE_PATH_AUTOMATE, mode='a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([name_input, time_str])
+                writer.writerow([nip, name_input, time_str])
             
             # Save data to MySQL
             time_category = "-"
@@ -238,16 +238,17 @@ def video_feed():
 def pred():
     # Initialize name_ to a default value
     name_ = "Face Recognition"
+    nip_ = "NIP"
     # Initialize name_ outside the loop
     for name, _, _, _ in predictions:
         if name:
-            name_, nip_ = data.rsplit('_', 1)
+            name_, nip_ = name.rsplit('_', 1)
         # If you want to break after the first non-empty name, you can use:
         # if name:
         #     name_ = name
         #     break
 
-    return jsonify({'name_': name_, 'nip_: nip_'})
+    return jsonify({'name_': name_, 'nip_': nip_})
 
 @app.route('/group_pred')
 def group_pred():

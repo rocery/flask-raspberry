@@ -113,15 +113,15 @@
     </form>
 
     <div class="row">
-        <div class="col-8 center_all" style="font-size: 10px;">Nama</div>
+        <div class="col-7 center_all" style="font-size: 10px;">Nama</div>
         <!-- <div class="col-2 center_all" style="font-size: 10px;">Kategori</div> -->
-        <div class="col-4 center_all" style="font-size: 10px;">Waktu</div>
+        <div class="col-5 center_all" style="font-size: 10px;">Waktu</div>
     </div>
     <div class="row">
         {% for row in data_csv %}
-        <div class="col-8 center_all" style="font-size: 10px;">{{ row[0] }}</div>
+        <div class="col-7 center_all" style="font-size: 10px;">{{ row[0] }}</div>
         <!-- <div class="col-2 center_all" style="font-size: 10px;">{{ row[1] }}</div> -->
-        <div class="col-4 center_all" style="font-size: 10px;">{{ row[2] }}</div>
+        <div class="col-5 center_all" style="font-size: 10px;">{{ row[2] }}</div>
         {% endfor %}
     </div>
 
@@ -240,21 +240,27 @@
         const currentNip = nipElement.textContent;
         
         // Define the list of invalid names
-        const invalidNames = ["Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition"];
+        const invalidNames = ["Nama", "Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition"];
+        const invalidNip = ["Palsu", " "];
         
         // Check if the name element is not empty, not one of the invalid names,
         // and the current name is different from the previous name
-        if (currentName && !invalidNames.includes(currentName) && currentName !== lastName) {
-            document.getElementById('name_input').value = currentName;
-            document.getElementById('nip_input').value = currentNip;
+        if (currentName && !invalidNames.includes(currentName) && !invalidNip.includes(currentNip) && currentName !== lastName) {
+            const nameInput = document.getElementById('name_input');
+            const nipInput = document.getElementById('nip_input');
+            const formSubmit = document.getElementById('form_submit');
             
-            // Submit the form
-            document.getElementById('form_submit').submit();
-            
-            // Update the previous name
-            lastName = currentName;
+            // Ensure the form elements exist
+            if (nameInput && nipInput && formSubmit) {
+                nameInput.value = currentName;
+                nipInput.value = currentNip;
+                
+                // Submit the form
+                formSubmit.submit();
+                
+                // Update the previous name
+                lastName = currentName;
+            }
         }
     }
-    // Set interval to check the condition and submit the form every 1 second
-    setInterval(submitForm, 2000);
 </script>

@@ -54,7 +54,7 @@ def liveness_check(frame, model_dir, device_id):
         
     return test_result
 
-def predict(X_frame, knn_clf=None, model_path=None, distance_threshold=0.5):
+def predict(X_frame, knn_clf=None, model_path=None, distance_threshold=0.4):
     """
     Recognizes faces in given image using a trained KNN classifier
 
