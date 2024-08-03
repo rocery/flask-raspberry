@@ -16,7 +16,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads/train'
 # Path to the CSV file
 CSV_FILE_PATH = 'static/data/data.csv'
 CSV_FILE_PATH_GROUP = 'static/data/group_data.csv'
-CSV_FILE_PATH_AUTOMATE = 'static/data/__.csv'
+CSV_FILE_PATH_AUTOMATE = 'static/data/data__.csv'
 
 # Ensure the CSV file exists and has the correct headers
 if not os.path.exists(CSV_FILE_PATH):
@@ -27,12 +27,12 @@ if not os.path.exists(CSV_FILE_PATH):
 if not os.path.exists(CSV_FILE_PATH_GROUP):
     with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
-        writer.writerow(['Names', 'Time'])
+        writer.writerow(['Name', 'Time'])
 
 if not os.path.exists(CSV_FILE_PATH_AUTOMATE):
     with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
-        writer.writerow(['NIP', 'Names', 'Time'])
+        writer.writerow(['NIP', 'Name', 'Time'])
         
 # Root index       
 @app.route('/')
@@ -75,16 +75,16 @@ def facerec_():
 def facerec__():
     # data_csv = read_csv(CSV_FILE_PATH)
     
-    with open(CSV_FILE_PATH, 'r') as file:
+    with open(CSV_FILE_PATH_AUTOMATE, 'r') as file:
         reader = reversed(list(csv.reader(file)))
         last_row = next(reader)
-        last_index = last_row[0]
+        last_index = last_row[1]
     ip_address = get_external_ip()
     
     # read_data_from_db
     data = read_presensi()
     if data == False:
-        data = read_csv(CSV_FILE_PATH)
+        data = read_csv(CSV_FILE_PATH_AUTOMATE)
     
     return render_template('face_recognition/facerec__.html', data_csv=data, ip_address=ip_address, last_index=last_index)
 
@@ -242,7 +242,10 @@ def pred():
     # Initialize name_ outside the loop
     for name, _, _, _ in predictions:
         if name:
-            name_, nip_ = name.rsplit('_', 1)
+            try:
+                name_, nip_ = name.rsplit('_', 1)
+            except:
+                name_ = name
         # If you want to break after the first non-empty name, you can use:
         # if name:
         #     name_ = name
