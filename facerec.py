@@ -90,7 +90,7 @@ def predict(X_frame, knn_clf=None, model_path=None, distance_threshold=0.4):
         return []
     
     if len(liveness) > 1:
-        return [("Terdeteksi Lebih dari Satu Wajah", liveness[0][2], 10, 10)]
+        return [("Lebih dari Satu Wajah", liveness[0][2], 10, 10)]
     
     X_label = []
     X_value = []

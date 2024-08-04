@@ -62,3 +62,13 @@ if lmdb can't installed in windows os use python > 3.12 try use this repo ->
 -> git clone https://github.com/Bye-lemon/py-lmdb/tree/master
 -> cd py-lmdb 
 -> use pip install .
+
+
+Windows
+face_recognition
+flask
+torch
+torchvision
+numpy==1.26.4
+opencv-python
+scikit-learn

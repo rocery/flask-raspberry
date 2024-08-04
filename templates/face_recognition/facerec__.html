@@ -53,28 +53,6 @@
     </style>
 </head>
 <body>
-    <!-- Display flash messages in a modal -->
-    <!-- {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <div class="modal fade" id="notificationModal">
-                <div class="modal-dialog" style="width:303px;" role="document">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            {% for message in messages %}
-                                <p>{{ message }}</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    autoHideModal();
-                });
-            </script>
-        {% endif %}
-    {% endwith %} -->
-
     <div class="center_all">
         <div id="name_" class="name_p flex">Face Recogniton</div>
     </div>
@@ -88,27 +66,8 @@
     </div>
 
     <div class="d-flex flex-column">
-        <div class="center_all" id="datetime">
-            <!-- <p id="datetime" class="center_all"></p> -->
-        </div>
-       <!-- <div class="center_all">
-            <div class="flex">Nama : </div>
-            <div id="name_">-</div>
-       </div> !--> 
+        <div class="center_all" id="datetime"></div>
     </div>
-
-    <!-- <div class="button-container">
-        <form id="form_in" action="{{ url_for('submit_facerec_') }}" method="post" onsubmit="updateHiddenInput('form_in')">
-            <input type="hidden" id="time_category" name="time_category" value="IN"> 
-            <input type="hidden" id="name_input" name="name_input" value=""> 
-            <button type="submit" class="center_all btn btn-lg btn-success button_width" id="IN">IN</button>
-        </form>
-        <form id="form_out" action="{{ url_for('submit_facerec_') }}" method="post" onsubmit="updateHiddenInput('form_out')">
-            <input type="hidden" id="time_category" name="time_category" value="OUT">
-            <input type="hidden" id="name_input" name="name_input" value=""> 
-            <button type="submit" class="center_all btn btn-lg btn-danger button_width" id="OUT">OUT</button>
-        </form>
-    </div> -->
 
     <form id="form_submit" action="{{ url_for('submit_facerec__') }}" method="post">
         <input type="hidden" id="name_input" name="name_input" value=""> 
@@ -117,13 +76,11 @@
 
     <div class="row">
         <div class="col-7 center_all" style="font-size: 10px;">Nama</div>
-        <!-- <div class="col-2 center_all" style="font-size: 10px;">Kategori</div> -->
         <div class="col-5 center_all" style="font-size: 10px;">Waktu</div>
     </div>
     <div class="row">
         {% for row in data_csv %}
         <div class="col-7 center_all" style="font-size: 10px;">{{ row[1] }}</div>
-        <!-- <div class="col-2 center_all" style="font-size: 10px;">{{ row[1] }}</div> -->
         <div class="col-5 center_all" style="font-size: 10px;">{{ row[2] }}</div>
         {% endfor %}
     </div>
@@ -150,24 +107,12 @@
 <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
 
 <script language="javascript">
-    function updateName() {
-        var name_ = document.getElementById('name_');
-        var originalText = name_.textContent;
-        setInterval(function() {
-            if (name_.textContent != originalText) {
-                //console.log(name_.textContent);
-                originalText = name_.textContent;
-            }
-        }, 500);
-    }
-    updateName();
-
     function updateDateTime() {
         var now = new Date();
         var days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
         var day = days[now.getDay()];
         var date = now.getDate().toString().padStart(2, '0');
-        var month = (now.getMonth() + 1).toString().padStart(2, '0'); // Bulan dimulai dari 0
+        var month = (now.getMonth() + 1).toString().padStart(2, '0');
         var year = now.getFullYear();
         var hours = now.getHours().toString().padStart(2, '0');
         var minutes = now.getMinutes().toString().padStart(2, '0');
@@ -180,23 +125,10 @@
     }
 
     function startDateTime() {
-        updateDateTime(); // Panggil pertama kali untuk menampilkan waktu langsung
-        setInterval(updateDateTime, 1000); // Perbarui waktu setiap detik
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
     }
-
     window.onload = startDateTime;
-
-    function updateHiddenInput(formId) {
-        // Get the value of the h5 element with id "name_"
-        var name_ = document.getElementById('name_').textContent;
-        var nip_ = document.getElementById('nip_').textContent;
-        console.log(name_)
-        // Set this value to the hidden input field with id "name_input"
-        //document.getElementById('name_input').value = originalText;
-        //document.querySelector(`#${formId} input[name="name_input"]`).value = name_;
-        document.querySelector(`#${formId} input[name="name_input"]`).value = name_;
-        document.querySelector(`#${formId} input[name="nip_input"]`).value = nip_;
-    }
 
     // Function to hide the modal automatically after a few seconds
     function autoHideModal() {
@@ -211,6 +143,7 @@
     function autoRefresh() {
         location.reload();
     }
+    setInterval(autoRefresh, 60000);
 
     // Function to fetch predictions from the server
     function updatePredictions() {
@@ -218,52 +151,60 @@
             .then(response => response.json())
             .then(data => {
                 document.getElementById('name_').textContent = data.name_;
+                document.getElementById('nip_').textContent = data.nip_;
             });
     }
-
-    // Call autoRefresh every 60 seconds
-    setInterval(autoRefresh, 60000);
-
-    // Call updatePredictions every second
     setInterval(updatePredictions, 500);
 
-    let lastName = "{{ last_index }}";
-    /**
-     * Function to check the condition and submit the form
-     * Submits the form if the name element is not empty, not one of the invalid names,
-     * and the current name is different from the previous name
-     */
-    function submitForm() {
-        // Get the name element
-        const nameElement = document.getElementById('name_');
-        const nipElement = document.getElementById('nip_');
-        
-        // Get the current name
-        const currentName = nameElement.textContent;
-        const currentNip = nipElement.textContent;
-        
-        // Define the list of invalid names
-        const invalidNames = ["Nama", "Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition"];
-        const invalidNip = ["Palsu", " "];
-        
-        // Check if the name element is not empty, not one of the invalid names,
-        // and the current name is different from the previous name
-        if (currentName && !invalidNames.includes(currentName) && !invalidNip.includes(currentNip) && currentName !== lastName) {
-            const nameInput = document.getElementById('name_input');
-            const nipInput = document.getElementById('nip_input');
-            const formSubmit = document.getElementById('form_submit');
-            
-            // Ensure the form elements exist
-            if (nameInput && nipInput && formSubmit) {
-                nameInput.value = currentName;
-                nipInput.value = currentNip;
-                
-                // Submit the form
-                formSubmit.submit();
-                
-                // Update the previous name
-                lastName = currentName;
-            }
+let lastName = "{{ last_index }}";
+let previousName = "";  // Variable to store the previous name
+
+/**
+ * Function to check the condition and submit the form
+ * Submits the form if the name element is not empty, not one of the invalid names,
+ * and the current name is different from the previous name
+ */
+function submitForm() {
+    // Get the name and NIP elements
+    const nameElement = document.getElementById('name_');
+    const nipElement = document.getElementById('nip_');
+
+    // Get the current name and NIP
+    const currentName = nameElement.textContent.trim();
+    const currentNip = nipElement.textContent.trim();
+
+    // Define the list of invalid names and NIP values
+    const invalidNames = ["Nama", "Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition", "Lebih dari Satu Wajah"];
+    const invalidNip = ["Palsu", " "];
+    
+    // Print the previousName and currentName for debugging
+    console.log("Previous Name:", previousName);
+    console.log("Current Name:", currentName);
+
+    let containsInvalid = invalidNip.some(invalid => currentNip.includes(invalid));
+    // Check if the current name and NIP are valid and currentName matches previousName
+    if (currentName && !invalidNames.includes(currentName) && !containsInvalid && currentName !== lastName && currentName === previousName) {
+        const nameInput = document.getElementById('name_input');
+        const nipInput = document.getElementById('nip_input');
+        const formSubmit = document.getElementById('form_submit');
+
+        // Ensure the form elements exist
+        if (nameInput && nipInput && formSubmit) {
+            nameInput.value = currentName;
+            nipInput.value = currentNip;
+
+            // Submit the form
+            formSubmit.submit();
+
+            // Update the previous name
+            lastName = currentName;
         }
     }
+
+    // Update previousName to the currentName for the next interval
+    previousName = currentName;
+}
+    
+    // Call submitForm every 2 seconds
+    setInterval(submitForm, 2000);
 </script>

@@ -82,6 +82,7 @@ def facerec__():
     ip_address = get_external_ip()
     
     # read_data_from_db
+    # Disable for local test
     data = read_presensi()
     if data == False:
         data = read_csv(CSV_FILE_PATH_AUTOMATE)
@@ -106,7 +107,7 @@ def submit_facerec():
         name_input = request.form.get('name_input')
         time_str = time.strftime("%d-%m-%Y %H:%M:%S", time.localtime())
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah'] or 'Palsu' in name_input:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Lebih dari Satu Wajah'] or 'Palsu' in name_input:
             flash(f"Data terdeteksi salah")
             return redirect(url_for('facerec'))           
         else:
@@ -129,7 +130,7 @@ def submit_facerec_():
         name_input = request.form.get('name_input')
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in name_input:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in name_input:
             flash(f"Data terdeteksi salah", "danger")
             return redirect(url_for('facerec_'))
             
@@ -161,8 +162,9 @@ def submit_facerec__():
         name_input = request.form.get('name_input')
         nip = request.form.get('nip_input')
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+        time_category = "-"
         
-        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Terdeteksi Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in name_input:
+        if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in nip:
             flash("Data terdeteksi salah", "danger")
             return redirect(url_for('facerec__'))
             
@@ -173,7 +175,6 @@ def submit_facerec__():
                 writer.writerow([nip, name_input, time_str])
             
             # Save data to MySQL
-            time_category = "-"
             data = insert_presensi(nip, name_input, time_category, time_str)
             if data:
                 flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
@@ -205,7 +206,7 @@ def group_submit_facerec():
 # in Raspberry Pi, use index camera won't work
 camera = '/dev/video0'
 # dev/video0
-cap = cv2.VideoCapture(camera)
+cap = cv2.VideoCapture(1)
 predictions = []
 def generate_frames():
     process_this_frame = 9
