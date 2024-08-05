@@ -156,56 +156,56 @@
     }
     setInterval(updatePredictions, 500);
 
-let lastName = "{{ last_index }}";
-console.log(lastName);
-let previousName = "";  // Variable to store the previous name
+    let lastName = "{{ last_index }}";
+    console.log(lastName);
+    let previousName = "";  // Variable to store the previous name
 
-/**
- * Function to check the condition and submit the form
- * Submits the form if the name element is not empty, not one of the invalid names,
- * and the current name is different from the previous name
- */
-function submitForm() {
-    // Get the name and NIP elements
-    const nameElement = document.getElementById('name_');
-    const nipElement = document.getElementById('nip_');
+    /**
+    * Function to check the condition and submit the form
+    * Submits the form if the name element is not empty, not one of the invalid names,
+    * and the current name is different from the previous name
+    */
+    function submitForm() {
+        // Get the name and NIP elements
+        const nameElement = document.getElementById('name_');
+        const nipElement = document.getElementById('nip_');
 
-    // Get the current name and NIP
-    const currentName = nameElement.textContent.trim();
-    const currentNip = nipElement.textContent.trim();
+        // Get the current name and NIP
+        const currentName = nameElement.textContent.trim();
+        const currentNip = nipElement.textContent.trim();
 
-    // Define the list of invalid names and NIP values
-    const invalidNames = ["Nama", "Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition", "Lebih dari Satu Wajah"];
-    const invalidNip = ["Palsu", " "];
-    
-    // Print the previousName and currentName for debugging
-    console.log("Previous Name:", previousName);
-    console.log("Current Name:", currentName);
+        // Define the list of invalid names and NIP values
+        const invalidNames = ["Nama", "Tidak Dikenali", "Tidak Terdeteksi", "-", " ", "", "Palsu", "Face Recognition", "Lebih dari Satu Wajah"];
+        const invalidNip = ["Palsu", " "];
+        
+        // Print the previousName and currentName for debugging
+        console.log("Previous Name:", previousName);
+        console.log("Current Name:", currentName);
 
-    let containsInvalid = invalidNip.some(invalid => currentNip.includes(invalid));
-    // Check if the current name and NIP are valid and currentName matches previousName
-    if (currentName && !invalidNames.includes(currentName) && !containsInvalid && currentName !== lastName && currentName === previousName) {
-        const nameInput = document.getElementById('name_input');
-        const nipInput = document.getElementById('nip_input');
-        const formSubmit = document.getElementById('form_submit');
+        let containsInvalid = invalidNip.some(invalid => currentNip.includes(invalid));
+        // Check if the current name and NIP are valid and currentName matches previousName
+        if (currentName && !invalidNames.includes(currentName) && !containsInvalid && currentName !== lastName && currentName === previousName) {
+            const nameInput = document.getElementById('name_input');
+            const nipInput = document.getElementById('nip_input');
+            const formSubmit = document.getElementById('form_submit');
 
-        // Ensure the form elements exist
-        if (nameInput && nipInput && formSubmit) {
-            nameInput.value = currentName;
-            nipInput.value = currentNip;
+            // Ensure the form elements exist
+            if (nameInput && nipInput && formSubmit) {
+                nameInput.value = currentName;
+                nipInput.value = currentNip;
 
-            // Submit the form
-            formSubmit.submit();
+                // Submit the form
+                formSubmit.submit();
 
-            // Update the previous name
-            lastName = currentName;
+                // Update the previous name
+                lastName = currentName;
+            }
         }
-    }
 
-    // Update previousName to the currentName for the next interval
-    previousName = currentName;
-}
-    
-// Call submitForm every 2 seconds
-setInterval(submitForm, 2000);
+        // Update previousName to the currentName for the next interval
+        previousName = currentName;
+    }
+        
+    // Call submitForm every 2 seconds
+    setInterval(submitForm, 2000);
 </script>

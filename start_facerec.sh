@@ -27,5 +27,5 @@ sleep 10
 #rm -rf ~/.config/chromium/Default
 
 # Launch Chromium browser in full-screen mode with flags to disable session restore prompt
-chromium-browser --start-fullscreen --disable-session-crashed-bubble --disable-infobars --incognito --disable-restore-session-state http://localhost:5000/face_recognition/facerec_
+chromium-browser --start-fullscreen --disable-session-crashed-bubble --disable-infobars --incognito --disable-restore-session-state http://localhost:5000/face_recognition/facerec__
 
