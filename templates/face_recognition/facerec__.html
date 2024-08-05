@@ -157,6 +157,7 @@
     setInterval(updatePredictions, 500);
 
 let lastName = "{{ last_index }}";
+console.log(lastName);
 let previousName = "";  // Variable to store the previous name
 
 /**
@@ -205,6 +206,6 @@ function submitForm() {
     previousName = currentName;
 }
     
-    // Call submitForm every 2 seconds
-    setInterval(submitForm, 2000);
+// Call submitForm every 2 seconds
+setInterval(submitForm, 2000);
 </script>
