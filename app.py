@@ -206,7 +206,7 @@ def group_submit_facerec():
 # in Raspberry Pi, use index camera won't work
 camera = '/dev/video0'
 # dev/video0
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(camera)
 predictions = []
 def generate_frames():
     process_this_frame = 9
