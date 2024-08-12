@@ -148,3 +148,12 @@ def show_labels_on_image(frame, predictions):
     
     opencvimage = np.array(pil_image)
     return opencvimage
+
+def saved_image(frame, name):
+    # save image to local folder
+    folder_path = "saved_frames"
+    nameFile = name + ".jpg"
+    os.makedirs(folder_path, exist_ok=True)
+    frame_filename = os.path.join(folder_path, nameFile)
+    cv2.imwrite(frame_filename, frame)
+    print("Frame saved to {}".format(frame_filename))

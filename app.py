@@ -1,5 +1,5 @@
 from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, flash
-from facerec import predict, show_labels_on_image
+from facerec import predict, show_labels_on_image, saved_image
 from read_data import *
 # from read_button import *
 from uploads import *
@@ -163,6 +163,8 @@ def submit_facerec__():
         nip = request.form.get('nip_input')
         time_str = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
         time_category = "-"
+        
+        # save_image()
         
         if name_input in ['-', '', 'Tidak Dikenali', 'Tidak Terdeteksi', 'Palsu', 'Lebih dari Satu Wajah', 'Face Recognition'] or 'Palsu' in nip:
             flash("Data terdeteksi salah", "danger")
