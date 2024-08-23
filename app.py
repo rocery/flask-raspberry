@@ -1,5 +1,6 @@
 from flask import Flask, render_template, Response, jsonify, request, redirect, url_for, flash
-from facerec import predict, show_labels_on_image, saved_image
+from facerec import predict, show_labels_on_image
+import face_recognition
 from read_data import *
 # from read_button import *
 from uploads import *
@@ -50,7 +51,7 @@ def plat_number():
 
 # Route Face_Recognition Index
 @app.route('/face_recognition')
-def face_recognition():
+def face_recognition_home():
     return render_template('face_recognition/index.html')
 
 #Route Single Facerec
@@ -211,7 +212,7 @@ camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 predictions = []
 def generate_frames():
-    process_this_frame = 29
+    process_this_frame = 14
     while True:
         # Baca frame dari webcam
         success, frame = cap.read()
@@ -221,9 +222,14 @@ def generate_frames():
             # Encode frame ke format JPEG
             img = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
             process_this_frame = process_this_frame + 1
-            if process_this_frame % 30 == 0:
+            
+            if process_this_frame % 15 == 0:
+                faceloc = face_recognition.face_locations(img)
+                if len(faceloc) > 0:
+                    time.sleep(0.5)
                 global predictions
                 predictions = predict(img, model_path="static/clf/trained_knn_model.clf")
+                print(predictions)
             frame = show_labels_on_image(frame, predictions)
             ret, buffer = cv2.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -317,4 +323,4 @@ if __name__ == '__main__':
     # finally:
     #     GPIO.cleanup
         
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    app.run(host='0.0.0.0', port=5001, threaded=True)
