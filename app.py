@@ -211,7 +211,7 @@ camera = '/dev/video0'
 cap = cv2.VideoCapture(camera)
 predictions = []
 def generate_frames():
-    process_this_frame = 9
+    process_this_frame = 29
     while True:
         # Baca frame dari webcam
         success, frame = cap.read()
@@ -221,7 +221,7 @@ def generate_frames():
             # Encode frame ke format JPEG
             img = cv2.resize(frame, (0, 0), fx=0.5, fy=0.5)
             process_this_frame = process_this_frame + 1
-            if process_this_frame % 10 == 0:
+            if process_this_frame % 30 == 0:
                 global predictions
                 predictions = predict(img, model_path="static/clf/trained_knn_model.clf")
             frame = show_labels_on_image(frame, predictions)
