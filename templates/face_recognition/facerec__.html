@@ -154,7 +154,7 @@
                 document.getElementById('nip_').textContent = data.nip_;
             });
     }
-    setInterval(updatePredictions, 400);
+    setInterval(updatePredictions, 300);
 
     let lastName = "{{ last_index }}";
     let previousName = "";  // Variable to store the previous name
@@ -206,5 +206,5 @@
     }
         
     // Call submitForm every 2 seconds
-    setInterval(submitForm, 500);
+    setInterval(submitForm, 1000);
 </script>
