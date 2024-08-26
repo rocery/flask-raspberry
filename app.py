@@ -172,17 +172,21 @@ def submit_facerec__():
             return redirect(url_for('facerec__'))
             
         else:
-            # Save data to CSV
-            with open(CSV_FILE_PATH_AUTOMATE, mode='a', newline='') as file:
-                writer = csv.writer(file)
-                writer.writerow([nip, name_input, time_str])
-            
-            # Save data to MySQL
-            data = insert_presensi(nip, name_input, time_category, time_str)
-            if data:
-                flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
-            else:
+            try:
+                # Save data to CSV
+                with open(CSV_FILE_PATH_AUTOMATE, mode='a', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([nip, name_input, time_str])
+                    flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
+            except:
                 flash("Data Gagal Disimpan ke Database. Mohon Hubungi IT", "danger")
+                
+            # # Save data to MySQL
+            # data = insert_presensi(nip, name_input, time_category, time_str)
+            # if data:
+            #     flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
+            # else:
+            #     flash("Data Gagal Disimpan ke Database. Mohon Hubungi IT", "danger")
                 
             return redirect(url_for('facerec__'))
         
