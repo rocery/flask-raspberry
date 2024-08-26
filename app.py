@@ -18,6 +18,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads/train'
 CSV_FILE_PATH = 'static/data/data.csv'
 CSV_FILE_PATH_GROUP = 'static/data/group_data.csv'
 CSV_FILE_PATH_AUTOMATE = 'static/data/data__.csv'
+CSV_TEMP__ = 'static/data/temp__.csv'
 
 # Ensure the CSV file exists and has the correct headers
 if not os.path.exists(CSV_FILE_PATH):
@@ -34,7 +35,12 @@ if not os.path.exists(CSV_FILE_PATH_AUTOMATE):
     with open(CSV_FILE_PATH_GROUP, mode = 'w', newline = '') as file:
         writer = csv.writer(file)
         writer.writerow(['NIP', 'Name', 'Time'])
-        
+
+if not os.path.exists(CSV_TEMP__):
+    with open(CSV_TEMP__, mode = 'w', newline = '') as file:
+        writer = csv.writer(file)
+        writer.writerow(['NIP', 'Name', 'Time'])
+
 # Root index       
 @app.route('/')
 def index():
@@ -177,7 +183,12 @@ def submit_facerec__():
                 with open(CSV_FILE_PATH_AUTOMATE, mode='a', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow([nip, name_input, time_str])
-                    flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
+                
+                with open(CSV_TEMP__, mode='a', newline='') as file:
+                    writer = csv.writer(file)
+                    writer.writerow([nip, name_input, time_str])
+                
+                flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
             except:
                 flash("Data Gagal Disimpan ke Database. Mohon Hubungi IT", "danger")
                 
@@ -187,12 +198,17 @@ def submit_facerec__():
             #     flash(f"Berhasil! Nama: {name_input}, Kategori: {time_category}, Waktu: {time_str}", "success")
             # else:
             #     flash("Data Gagal Disimpan ke Database. Mohon Hubungi IT", "danger")
-                
+            
             return redirect(url_for('facerec__'))
         
     else:
         flash("Error, data terdeteksi tidak ada, silahkan ulangi proses Face Recognition")
         return redirect(url_for('facerec__'))
+    
+def insert_facerec_automatic():
+    with open(CSV_TEMP__, mode='r') as file:
+        reader = csv.reader(file)
+    
 
 @app.route('/group_submit_facerec', methods=['POST'])
 def group_submit_facerec():
