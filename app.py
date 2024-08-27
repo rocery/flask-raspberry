@@ -2,7 +2,7 @@ from flask import Flask, render_template, Response, jsonify, request, redirect, 
 from facerec import predict, show_labels_on_image
 import face_recognition
 from read_data import *
-# from read_button import *
+import schedule
 from uploads import *
 from mysql_process import *
 import cv2
@@ -325,7 +325,53 @@ def uploads():
         return redirect(url_for('uploads'))
     
     folders_info = get_folders_info(app.config['UPLOAD_FOLDER'])
-    return render_template('uploads.html', folders_info=folders_info) 
+    return render_template('uploads.html', folders_info=folders_info)
+
+def insert_data_to_db():
+    try:
+        # MySQL connection setup
+        db_connection = mysql.connector.connect(
+            host="192.168.15.223",
+            user="admin",
+            password="itbekasioke",
+            database="face_recognition"
+        )
+        cursor = db_connection.cursor()
+
+        # Read CSV file
+        with open(CSV_TEMP__, mode='r') as file:
+            csv_reader = csv.DictReader(file)
+            for row in csv_reader:
+                nip = row['NIP']
+                name = row['Name']
+                date = row['Time']
+
+                # Insert data into MySQL
+                cursor.execute(
+                    "INSERT INTO presensi (nip, name, date) VALUES (%s, %s, %s)",
+                    (nip, name, date)
+                )
+            db_connection.commit()
+
+        # Close the database connection
+        cursor.close()
+        db_connection.close()
+
+        # If successful, remove the CSV file
+        os.remove(CSV_TEMP__)
+        print("Data inserted successfully and CSV file deleted.")
+        
+        if not os.path.exists(CSV_TEMP__):
+            with open(CSV_TEMP__, mode = 'w', newline = '') as file:
+                writer = csv.writer(file)
+                writer.writerow(['NIP', 'Name', 'Time'])
+
+    except mysql.connector.Error as err:
+        print(f"Error: {err}")
+        
+# Schedule the task to run every hour
+schedule.every(1).minutes.do(insert_data_to_db)
+
 
 # @app.route('/button_status', methods=['GET'])
 # def button_status():
@@ -337,10 +383,13 @@ def uploads():
 #     })
 
 if __name__ == '__main__':
-    # try:
-    #     # if debug=True, the camera may be not accessible
-    #     app.run(host='0.0.0.0', port=5000, threaded=True)
-    # finally:
-    #     GPIO.cleanup
+    def run_scheduler():
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
         
+    import threading
+    scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+    scheduler_thread.start()
+    
     app.run(host='0.0.0.0', port=5000, threaded=True)
