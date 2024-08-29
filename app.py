@@ -93,7 +93,7 @@ def facerec__():
     # data = read_presensi()
     # if data == False:
     data = read_csv(CSV_FILE_PATH_AUTOMATE)
-    
+    #last_index = "-"
     return render_template('face_recognition/facerec__.html', data_csv=data, ip_address=ip_address, last_index=last_index)
 
 #Route Group Facerec
