@@ -81,11 +81,14 @@ def facerec_():
 @app.route('/face_recognition/facerec__')
 def facerec__():
     # data_csv = read_csv(CSV_FILE_PATH)
-    
-    with open(CSV_FILE_PATH_AUTOMATE, 'r') as file:
-        reader = reversed(list(csv.reader(file)))
-        last_row = next(reader)
-        last_index = last_row[1]
+    last_index = []
+    try:
+        with open(CSV_FILE_PATH_AUTOMATE, 'r') as file:
+            reader = reversed(list(csv.reader(file)))
+            last_row = next(reader)
+            last_index = last_row[1]
+    except:
+        pass
     ip_address = get_external_ip()
     
     # read_data_from_db
