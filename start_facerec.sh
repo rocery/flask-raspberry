@@ -21,10 +21,12 @@ python3 app.py &
 wait_for_x
 
 # Wait for a few more seconds to ensure the Flask app is running
-sleep 10
+sleep 30
 
 # Clear Chromium browser cache
-#rm -rf ~/.config/chromium/Default
+rm -rf ~/.config/chromium/Default
+
+sleep 10
 
 # Launch Chromium browser in full-screen mode with flags to disable session restore prompt
 chromium-browser --start-fullscreen --disable-session-crashed-bubble --disable-infobars --incognito --disable-restore-session-state http://localhost:5000/face_recognition/facerec__
